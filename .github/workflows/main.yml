@@ -6,7 +6,7 @@ jobs:
     name: Test publish_app
     steps:
       - name: Update a dummy app
-        uses: ausaccessfed/publish_app@v1
+        uses: ausaccessfed/publish_app@v1.0.1
         with:
           project: 'dummy'
           tag: '1.0.0'
