@@ -2,6 +2,7 @@
 FROM alpine:3.10
 
 RUN apk add --no-cache \
+	jq \
         git \
         python3 \
         py3-pip \
