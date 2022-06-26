@@ -1,15 +1,13 @@
 on: [push]
 
 jobs:
-  hello_world_job:
+  test_publish_app:
     runs-on: ubuntu-latest
-    name: A job to say hello
+    name: Test publish_app
     steps:
-      - name: Hello world action step
-        id: hello
+      - name: Update a dummy app
         uses: ausaccessfed/publish_app@v1
         with:
-          who-to-greet: 'Mona the Octocat'
-      # Use the output from the `hello` step
-      - name: Get the output time
-        run: echo "The time was ${{ steps.hello.outputs.time }}"
+          project: 'dummy'
+          tag: '1.0.0'
+          serial_number: 42

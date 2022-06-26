@@ -1,16 +1,25 @@
 # action.yml
-name: 'Hello World'
-description: 'Greet someone and record the time'
+name: 'publish_app'
+description: 'Update the revision of an app in the GitOps repo'
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
+  project:
+    description: 'GitHub project name to deploy'
     required: true
-    default: 'World'
-outputs:
-  time: # id of output
-    description: 'The time we greeted you'
+  tag:
+    description: 'Tag of built container image'
+    required: true
+  serial_number:
+    description: 'Serial number to prevent overwriting newer images'
+    required: true
+  container_index:
+    description: 'Container number to update'
+    required: false
+    default: 0
 runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
-    - ${{ inputs.who-to-greet }}
+    - ${{ inputs.project }}
+    - ${{ inputs.tag }}
+    - ${{ inputs.serial_number }}
+    - ${{ inputs.container_index }}
