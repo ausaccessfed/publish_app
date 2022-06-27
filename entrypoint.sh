@@ -1,4 +1,4 @@
-#!/bin/sh -l
+#!/bin/bash
 
 # Update the image tag for project in the GitOps repository
 
