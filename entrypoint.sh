@@ -44,6 +44,9 @@ cat <<-EOF > "applications/${project}/overlays/current/patch_image_${container_i
 
 EOF
 
+
+git config user.email "ci@aaf.edu.au"
+git config user.name "AAF CI"
 git add .
 git commit -m "Update ${project} image tag ${container_index} to '$tag'"
 git push
