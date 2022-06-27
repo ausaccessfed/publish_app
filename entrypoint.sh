@@ -4,9 +4,9 @@
 
 set -e
 
-project=$1
-tag=$2
-serial_number=$3
+project=${1:-$ECR_REPOSITORY}
+tag=${2:-$IMAGE_TAG}
+serial_number=${3:-$GITHUB_RUN_NUMBER}
 # optional argument to specify which container in the pod (defaults to first)
 container_index=${4:-0}
 
