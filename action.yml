@@ -3,16 +3,16 @@ name: 'publish_app'
 description: 'Update the revision of an app in the GitOps repo'
 inputs:
   project:
-    description: 'GitHub project name to deploy'
-    required: true
+    description: 'Override GitHub project name to deploy'
+    required: false
   tag:
-    description: 'Tag of built container image'
-    required: true
+    description: 'Override tag of built container image'
+    required: false
   serial_number:
-    description: 'Serial number to prevent overwriting newer images'
-    required: true
+    description: 'Override serial number to prevent overwriting newer images'
+    required: false
   container_index:
-    description: 'Container number to update'
+    description: 'Container number in Pod to update (default 0)'
     required: false
     default: 0
 runs:
