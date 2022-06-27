@@ -17,7 +17,7 @@ fi
 
 dir="$(mktemp -d)/manifests"
 
-oci_repo_url=$(aws ssm get-parameter --name ${project}-repo-url --query "Parameter.Value" --output text)
+oci_repo_url=$(aws ssm get-parameter --name ${ECR_REPOSITORY}-repo-url --query "Parameter.Value" --output text)
 git_user=$(aws ssm get-parameter --name git-ssl-username --query "Parameter.Value" --output text| tr -d '\n'| jq -sRr @uri)
 git_password=$(aws ssm get-parameter --name git-ssl-password --query "Parameter.Value" --output text --with-decryption| tr -d '\n'| jq -sRr @uri)
 
