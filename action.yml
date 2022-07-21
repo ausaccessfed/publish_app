@@ -2,16 +2,15 @@
 name: "publish_app"
 description: "Update the revision of an app in the GitOps repo"
 inputs:
-  project:
-    description: "Override GitHub project name to deploy"
-    required: false
+  projects:
+    description: "comma separated list of projects to deploy image tags to"
+    required: true
   tag:
     description: "Override tag of built container image"
     required: false
   branch:
     description: "Branch being deployed"
-    default: "master"
-    required: false
+    required: true
   serial_number:
     description: "Override serial number to prevent overwriting newer images"
     required: false
@@ -23,7 +22,7 @@ runs:
   using: "docker"
   image: "Dockerfile"
   args:
-    - ${{ inputs.project }}
+    - ${{ inputs.projects }}
     - ${{ inputs.tag }}
     - ${{ inputs.serial_number }}
     - ${{ inputs.container_index }}
