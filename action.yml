@@ -1,25 +1,30 @@
 # action.yml
-name: 'publish_app'
-description: 'Update the revision of an app in the GitOps repo'
+name: "publish_app"
+description: "Update the revision of an app in the GitOps repo"
 inputs:
   project:
-    description: 'Override GitHub project name to deploy'
+    description: "Override GitHub project name to deploy"
     required: false
   tag:
-    description: 'Override tag of built container image'
+    description: "Override tag of built container image"
+    required: false
+  branch:
+    description: "Branch being deployed"
+    default: "master"
     required: false
   serial_number:
-    description: 'Override serial number to prevent overwriting newer images'
+    description: "Override serial number to prevent overwriting newer images"
     required: false
   container_index:
-    description: 'Container number in Pod to update (default 0)'
+    description: "Container number in Pod to update (default 0)"
     required: false
     default: 0
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
+  using: "docker"
+  image: "Dockerfile"
   args:
     - ${{ inputs.project }}
     - ${{ inputs.tag }}
     - ${{ inputs.serial_number }}
     - ${{ inputs.container_index }}
+    - ${{ inputs.branch }}
