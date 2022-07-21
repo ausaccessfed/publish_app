@@ -3,13 +3,13 @@ name: "publish_app"
 description: "Update the revision of an app in the GitOps repo"
 inputs:
   projects:
-    description: "comma separated list of projects to deploy image tags to"
+    description: "Comma separated list of projects to deploy image tags to"
     required: true
   tag:
     description: "Override tag of built container image"
     required: false
-  branch:
-    description: "Branch being deployed"
+  environments:
+    description: "Comma separated list of environments to deploy image tags to"
     required: true
   serial_number:
     description: "Override serial number to prevent overwriting newer images"
@@ -26,4 +26,4 @@ runs:
     - ${{ inputs.tag }}
     - ${{ inputs.serial_number }}
     - ${{ inputs.container_index }}
-    - ${{ inputs.branch }}
+    - ${{ inputs.environments }}

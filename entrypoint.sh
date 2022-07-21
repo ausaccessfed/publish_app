@@ -9,7 +9,7 @@ tag=${2:-$IMAGE_TAG}
 serial_number=${3:-$GITHUB_RUN_NUMBER}
 # optional argument to specify which container in the pod (defaults to first)
 container_index=${4:-0}
-branch=${5:-master}
+environments=${5}
 
 if [ -z "$serial_number" ]; then
   echo "Usage: $0 project tag serial_number [container_index]"
@@ -26,18 +26,9 @@ git clone --depth 1 "https://${git_user}:${git_password}@git-codecommit.ap-south
 pushd "$dir"
 for project in $(echo $projects | tr "," "\n");
 do
-  directories=("applications/${project}/overlays/development/")
-  environments="development"
-  if [ "$branch" == "master" ] || [ "$branch" == "main" ] ; then
-    environments="production/test"
-    directories=(
-        "applications/${project}/overlays/test/"
-        "applications/${project}/overlays/production/"
-      )
-  fi
-
-  for directory in "${directories[@]}";
+  for environment in $(echo $environments | tr "," "\n");
   do
+    directory="applications/${project}/overlays/${environment}/"
     serial_number_filename="${directory}/container_${container_index}_serial_number.txt"
     patch_image_filename="${directory}/patch_image_${container_index}_tag.yaml"
     # Ensure we don't accidentally overwrite newer images updates
