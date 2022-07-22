@@ -42,7 +42,7 @@ do
 
     cd $directory
     kustomize edit set image $oci_repo_url:$tag
-    cd ../../../..
+    cd -
   done
 done
 
