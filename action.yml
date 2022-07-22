@@ -14,10 +14,6 @@ inputs:
   serial_number:
     description: "Override serial number to prevent overwriting newer images"
     required: false
-  container_index:
-    description: "Container number in Pod to update (default 0)"
-    required: false
-    default: 0
 runs:
   using: "docker"
   image: "Dockerfile"
@@ -25,5 +21,4 @@ runs:
     - ${{ inputs.projects }}
     - ${{ inputs.tag }}
     - ${{ inputs.serial_number }}
-    - ${{ inputs.container_index }}
     - ${{ inputs.environments }}
