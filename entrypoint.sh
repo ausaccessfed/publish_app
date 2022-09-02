@@ -31,14 +31,14 @@ do
     serial_number_filename="${directory}/container_${ECR_REPOSITORY}_serial_number.txt"
     # Ensure we don't accidentally overwrite newer images updates
     if [ -f "$serial_number_filename" ]; then
-      last_serial_number=$(<"$serial_number_filename")
+      last_serial_number=$(echo $(<"$serial_number_filename") | sed "s/SERIAL_NUMBER=//")
       if [ "$last_serial_number" -ge "$serial_number" ]; then
         echo "Attempted to update image with serial number $serial_number, but previous serial number was $last_serial_number. Image not updated."
         exit 1
       fi
     fi
 
-    echo "$serial_number" > "$serial_number_filename"
+    echo "SERIAL_NUMBER=$serial_number" > "$serial_number_filename"
 
     cd $directory
     kustomize edit set image $oci_repo_url:$tag
