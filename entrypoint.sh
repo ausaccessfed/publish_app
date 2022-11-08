@@ -15,19 +15,21 @@ if [ -z "$serial_number" ]; then
   exit 1
 fi
 
-dir="$(mktemp -d)/manifests"
+dir="$(mktemp -d)/terraform"
 
 oci_repo_url=$(aws ssm get-parameter --name ${ECR_REPOSITORY}-repo-url --query "Parameter.Value" --output text)
-git_user=$(aws ssm get-parameter --name git-ssl-username --query "Parameter.Value" --output text| tr -d '\n'| jq -sRr @uri)
-git_password=$(aws ssm get-parameter --name git-ssl-password --query "Parameter.Value" --output text --with-decryption| tr -d '\n'| jq -sRr @uri)
+git_user=$(aws ssm get-parameter --name argocd-git-ssl-username --query "Parameter.Value" --output text| tr -d '\n'| jq -sRr @uri)
+git_password=$(aws ssm get-parameter --name argocd-git-ssl-password --query "Parameter.Value" --output text --with-decryption| tr -d '\n'| jq -sRr @uri)
 
-git clone --depth 1 "https://${git_user}:${git_password}@git-codecommit.ap-southeast-2.amazonaws.com/v1/repos/manifests" "$dir"
+git clone --depth 1 "https://${git_user}:${git_password}@https://github.com/ausaccessfed/aaf-terraform.git" "$dir"
+BRANCH_NAME="feature/update-${project}-image-tags-$(date +\"%Y-%m-%d-%H-%M-%S\")"
+git checkout -b $BRANCH_NAME
 pushd "$dir"
 for project in $(echo $projects | tr "," "\n");
 do
   for environment in $(echo $environments | tr "," "\n");
   do
-    directory="applications/${project}/overlays/${environment}/"
+    directory="manifests/${project}/overlays/${environment}/"
     serial_number_filename="${directory}/container_${ECR_REPOSITORY}_serial_number.txt"
     # Ensure we don't accidentally overwrite newer images updates
     if [ -f "$serial_number_filename" ]; then
@@ -49,8 +51,12 @@ done
 git config user.email "ci@aaf.edu.au"
 git config user.name "AAF CI"
 git add .
-git commit -m "Update ${project} image tag ${ECR_REPOSITORY} to '$tag' for ${environments}"
-git push
+COMMIT_MESSAGE="Update ${project} image tag ${ECR_REPOSITORY} to '$tag' for ${environments}"
+git commit -m $COMMIT_MESSAGE
+git push --set-upstream origin $BRANCH_NAME
+PR_URL=$(gh pr create --title "$BRANCH_NAME" --body $COMMIT_MESSAGE)
+gh pr merge --auto --squash "$PR_URL"
+gh pr review --approve "$PR_URL"
 
 popd
 rm -rf "$dir"
