@@ -22,8 +22,6 @@ git_user=$(aws ssm get-parameter --name argocd-git-ssl-username --query "Paramet
 git_password=$(aws ssm get-parameter --name argocd-git-ssl-password --query "Parameter.Value" --output text --with-decryption| tr -d '\n'| jq -sRr @uri)
 
 git clone --depth 1 "https://${git_user}:${git_password}@github.com/ausaccessfed/aaf-terraform.git" "$dir"
-BRANCH_NAME="feature/update-image-tags-$(date +%Y-%m-%d-%H-%M-%S)"
-git checkout -b $BRANCH_NAME
 pushd "$dir"
 for project in $(echo $projects | tr "," "\n");
 do
@@ -53,10 +51,7 @@ git config user.name "AAF CI"
 git add .
 COMMIT_MESSAGE="Update ${projects} image tag ${ECR_REPOSITORY} to '$tag' for ${environments}"
 git commit -m "$COMMIT_MESSAGE"
-git push --set-upstream origin $BRANCH_NAME
-PR_URL=$(gh pr create --title "$BRANCH_NAME" --body "$COMMIT_MESSAGE")
-gh pr merge --auto --squash "$PR_URL"
-gh pr review --approve "$PR_URL"
+git push 
 
 popd
 rm -rf "$dir"
