@@ -22,14 +22,14 @@ git_user=$(aws ssm get-parameter --name argocd-git-ssl-username --query "Paramet
 git_password=$(aws ssm get-parameter --name argocd-git-ssl-password --query "Parameter.Value" --output text --with-decryption| tr -d '\n'| jq -sRr @uri)
 
 git clone --depth 1 "https://${git_user}:${git_password}@github.com/ausaccessfed/aaf-terraform.git" "$dir"
-BRANCH_NAME="feature/update-${project}-image-tags-$(date +\"%Y-%m-%d-%H-%M-%S\")"
+BRANCH_NAME="feature/update-${project}-image-tags-$(date +%Y-%m-%d-%H-%M-%S)"
 git checkout -b $BRANCH_NAME
 pushd "$dir"
 for project in $(echo $projects | tr "," "\n");
 do
   for environment in $(echo $environments | tr "," "\n");
   do
-    directory="manifests/${project}/overlays/${environment}/"
+    directory="manifests/${project}/overlays/${environment}"
     serial_number_filename="${directory}/container_${ECR_REPOSITORY}_serial_number.txt"
     # Ensure we don't accidentally overwrite newer images updates
     if [ -f "$serial_number_filename" ]; then
