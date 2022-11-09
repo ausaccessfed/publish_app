@@ -52,7 +52,7 @@ git config user.email "ci@aaf.edu.au"
 git config user.name "AAF CI"
 git add .
 COMMIT_MESSAGE="Update ${projects} image tag ${ECR_REPOSITORY} to '$tag' for ${environments}"
-git commit -m $COMMIT_MESSAGE
+git commit -m "$COMMIT_MESSAGE"
 git push --set-upstream origin $BRANCH_NAME
 PR_URL=$(gh pr create --title "$BRANCH_NAME" --body "$COMMIT_MESSAGE")
 gh pr merge --auto --squash "$PR_URL"
