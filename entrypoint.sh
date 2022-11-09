@@ -21,7 +21,7 @@ oci_repo_url=$(aws ssm get-parameter --name ${ECR_REPOSITORY}-repo-url --query "
 git_user=$(aws ssm get-parameter --name argocd-git-ssl-username --query "Parameter.Value" --output text| tr -d '\n'| jq -sRr @uri)
 git_password=$(aws ssm get-parameter --name argocd-git-ssl-password --query "Parameter.Value" --output text --with-decryption| tr -d '\n'| jq -sRr @uri)
 
-git clone --depth 1 "https://${git_user}:${git_password}@https://github.com/ausaccessfed/aaf-terraform.git" "$dir"
+git clone --depth 1 "https://${git_user}:${git_password}@github.com/ausaccessfed/aaf-terraform.git" "$dir"
 BRANCH_NAME="feature/update-${project}-image-tags-$(date +\"%Y-%m-%d-%H-%M-%S\")"
 git checkout -b $BRANCH_NAME
 pushd "$dir"
@@ -34,7 +34,7 @@ do
     # Ensure we don't accidentally overwrite newer images updates
     if [ -f "$serial_number_filename" ]; then
       last_serial_number=$(echo $(<"$serial_number_filename") | sed "s/SERIAL_NUMBER=//")
-      if [ "$last_serial_number" -ge "$serial_number" ]; then
+      if [ "$last_serial_number" -gt "$serial_number" ]; then
         echo "Attempted to update image with serial number $serial_number, but previous serial number was $last_serial_number. Image not updated."
         exit 1
       fi
