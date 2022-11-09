@@ -48,6 +48,7 @@ done
 
 git config user.email "ci@aaf.edu.au"
 git config user.name "AAF CI"
+git pull
 git add .
 COMMIT_MESSAGE="Update ${projects} image tag ${ECR_REPOSITORY} to '$tag' for ${environments}"
 git commit -m "$COMMIT_MESSAGE"
