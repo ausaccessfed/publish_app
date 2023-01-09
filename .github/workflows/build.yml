@@ -36,6 +36,8 @@ jobs:
           IMAGE_ID=$(echo "$ECR_REGISTRY/$ECR_REPOSITORY" | tr '[A-Z]' '[a-z]')
           echo "IMAGE_ID=$IMAGE_ID" >> $GITHUB_ENV
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+          image_tag=$(echo "${{github.sha}}" | tr / _)
+          echo "IMAGE_TAG=$image_tag" >> $GITHUB_ENV
 
       - name: Build Production OCI Image
         run: |
