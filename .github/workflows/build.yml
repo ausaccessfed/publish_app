@@ -4,7 +4,6 @@ on:
 
 jobs:
   push:
-    if: github.event_name == 'push' && github.ref_name == 'master'
     concurrency:
       group: ${{ github.event_name }}-${{ github.ref_name == 'master' && github.sha || github.ref_name }}-build
       cancel-in-progress: true
@@ -46,6 +45,7 @@ jobs:
           -t $IMAGE_ID:$IMAGE_TAG .
 
       - name: Push to ECR
+        if: github.event_name == 'push' && github.ref_name == 'master'
         run: |
           docker tag $IMAGE_ID:$IMAGE_TAG $IMAGE_ID:$VERSION
           docker tag $IMAGE_ID:$IMAGE_TAG $IMAGE_ID:latest
