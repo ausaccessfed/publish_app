@@ -13,6 +13,8 @@ jobs:
       id-token: write
       contents: read
       pull-requests: read
+    env:
+      ECR_REPOSITORY: publish_app
     steps:
       - uses: actions/checkout@v2
 
