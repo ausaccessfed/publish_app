@@ -4,11 +4,11 @@
 
 set -e
 
-projects=${1}
+projects=${1:-$PROJECTS}
 tag=${2:-$IMAGE_TAG}
 serial_number=${3:-$GITHUB_RUN_NUMBER}
 # optional argument to specify which container in the pod (defaults to first)
-environments=${4}
+environments=${4:-$ENVIRONMENTS}
 
 if [ -z "$serial_number" ]; then
   echo "Usage: $0 projects tag serial_number environments"

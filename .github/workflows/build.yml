@@ -1,0 +1,57 @@
+name: Build Docker Image
+on:
+  push:
+
+jobs:
+  push:
+    concurrency:
+      group: ${{ github.event_name }}-${{ github.ref_name == 'main' && github.sha || github.ref_name }}-build
+      cancel-in-progress: true
+    name: build and push image
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: read
+    env:
+      ECR_REPOSITORY: publish_app
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@master
+        with:
+          aws-region: ap-southeast-2
+          role-to-assume: ${{ secrets.ROLE }}
+          role-session-name: GithubActions-publish-app-ci
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: "Calculate Image ID & Version"
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          IMAGE_ID=$(echo "$ECR_REGISTRY/$ECR_REPOSITORY" | tr '[A-Z]' '[a-z]')
+          echo "IMAGE_ID=$IMAGE_ID" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          image_tag=$(echo "${{github.sha}}" | tr / _)
+          echo "IMAGE_TAG=$image_tag" >> $GITHUB_ENV
+
+      - name: Build Production OCI Image
+        run: |
+          docker pull $IMAGE_ID:latest || true
+          docker build --cache-from $IMAGE_ID:latest \
+          --build-arg DOCKER_ECR=${{ secrets.DOCKER_ECR }} \
+          --build-arg RELEASE_VERSION=${IMAGE_TAG} \
+          -t $IMAGE_ID:$IMAGE_TAG .
+
+      - name: Push to ECR
+        if: github.event_name == 'push' && github.ref_name == 'main'
+        run: |
+          docker tag $IMAGE_ID:$IMAGE_TAG $IMAGE_ID:$VERSION
+          docker tag $IMAGE_ID:$IMAGE_TAG $IMAGE_ID:latest
+          docker push --all-tags $IMAGE_ID
