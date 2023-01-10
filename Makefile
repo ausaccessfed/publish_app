@@ -12,6 +12,4 @@ login:
 	@if [ "${DOCKER_ECR}" != "" ]; then \
 		aws-vault exec shared_services -- aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin ${DOCKER_ECR}; \
 	fi
-run:
-	docker run ${DOCKER_ECR}publish_app discovery-service asd asd test,production
 
