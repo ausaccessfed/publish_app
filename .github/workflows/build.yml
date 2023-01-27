@@ -34,12 +34,8 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
           # Strip git ref prefix from version
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
           IMAGE_ID=$(echo "$ECR_REGISTRY/$ECR_REPOSITORY" | tr '[A-Z]' '[a-z]')
           echo "IMAGE_ID=$IMAGE_ID" >> $GITHUB_ENV
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-          image_tag=$(echo "${{github.sha}}" | tr / _)
-          echo "IMAGE_TAG=$image_tag" >> $GITHUB_ENV
 
       - name: Build Production OCI Image
         run: |
@@ -47,11 +43,9 @@ jobs:
           docker build --cache-from $IMAGE_ID:latest \
           --build-arg DOCKER_ECR=${{ secrets.DOCKER_ECR }} \
           --build-arg RELEASE_VERSION=${IMAGE_TAG} \
-          -t $IMAGE_ID:$IMAGE_TAG .
+          -t $IMAGE_ID:latest .
 
       - name: Push to ECR
         if: github.event_name == 'push' && github.ref_name == 'main'
         run: |
-          docker tag $IMAGE_ID:$IMAGE_TAG $IMAGE_ID:$VERSION
-          docker tag $IMAGE_ID:$IMAGE_TAG $IMAGE_ID:latest
-          docker push --all-tags $IMAGE_ID
+          docker push $IMAGE_ID:latest
