@@ -11,14 +11,10 @@ inputs:
   environments:
     description: "Comma separated list of environments to deploy image tags to"
     required: true
-  serial_number:
-    description: "Override serial number to prevent overwriting newer images"
-    required: false
 runs:
   using: "docker"
   image: "Dockerfile"
   args:
     - ${{ inputs.projects }}
     - ${{ inputs.tag }}
-    - ${{ inputs.serial_number }}
     - ${{ inputs.environments }}
