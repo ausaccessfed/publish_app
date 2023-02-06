@@ -25,9 +25,12 @@ for project in $(echo $projects | tr "," "\n");
 do
   for environment in $(echo $environments | tr "," "\n");
   do
-    cd "manifests/${project}/overlays/${environment}"
-    kustomize edit set image $oci_repo_url:$tag
-    cd -
+    DIRECTORY="manifests/${project}/overlays/${environment}"
+    if [ -d "$DIRECTORY" ]; then
+      cd "$DIRECTORY"
+      kustomize edit set image $oci_repo_url:$tag
+      cd -
+    fi
   done
 done
 
