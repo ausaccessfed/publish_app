@@ -27,6 +27,9 @@ do
   do
     DIRECTORY="manifests/${project}/overlays/${environment}"
     if [ -d "$DIRECTORY" ]; then
+      if [ "$environment" == "jisc" ]; then
+        oci_repo_url=$(aws ssm get-parameter --name ${ECR_REPOSITORY}-eu-west-2-repo-url --query "Parameter.Value" --output text)
+      fi
       cd "$DIRECTORY"
       kustomize edit set image $oci_repo_url:$tag
       cd -
