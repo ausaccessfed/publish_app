@@ -16,10 +16,10 @@ jobs:
     env:
       ECR_REPOSITORY: publish_app
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@master
+        uses: aws-actions/configure-aws-credentials@380f3a50f5896345ce3f2dd3ba2d821c030f17d8 # v3
         with:
           aws-region: ap-southeast-2
           role-to-assume: ${{ secrets.ROLE }}
@@ -27,7 +27,7 @@ jobs:
 
       - name: Login to Amazon ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@2fc7aceee09e9e4a7105c0d060c656fad0b4f63d # v1
 
       - name: "Calculate Image ID & Version"
         env:
