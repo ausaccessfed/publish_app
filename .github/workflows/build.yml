@@ -16,7 +16,7 @@ jobs:
     env:
       ECR_REPOSITORY: publish_app
     steps:
-      - uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@380f3a50f5896345ce3f2dd3ba2d821c030f17d8 # v3
