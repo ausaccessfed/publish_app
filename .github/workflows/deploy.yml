@@ -2,7 +2,7 @@ name: Build Docker Image
 on:
   push:
   schedule:
-    - cron: "0 0 1 * *"
+    - cron: '0 0 1 * *'
   issue_comment:
     types: [created]
 jobs:
@@ -20,3 +20,10 @@ jobs:
     secrets: inherit
     uses: ausaccessfed/workflows/.github/workflows/deploy-sync.yml@main
     with:
+      ecr_repository: publish_app
+      version_command: echo ""
+      event_name: ${{ github.event_name }}
+      test_environments: ''
+      default_branch: main
+      production_environments: ''
+      development_environments: ''
