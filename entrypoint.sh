@@ -15,25 +15,25 @@ fi
 
 dir="$(mktemp -d)/terraform"
 
-oci_repo_url=$(aws ssm get-parameter --name ${ECR_REPOSITORY}-repo-url --query "Parameter.Value" --output text)
-git_user=$(aws ssm get-parameter --name argocd-git-ssl-username --query "Parameter.Value" --output text| tr -d '\n'| jq -sRr @uri)
-git_password=$(aws ssm get-parameter --name argocd-git-ssl-password --query "Parameter.Value" --output text --with-decryption| tr -d '\n'| jq -sRr @uri)
+git_user=$(aws ssm get-parameter --name argocd-git-ssl-username --query "Parameter.Value" --output text | tr -d '\n' | jq -sRr @uri)
+git_password=$(aws ssm get-parameter --name argocd-git-ssl-password --query "Parameter.Value" --output text --with-decryption | tr -d '\n' | jq -sRr @uri)
 
 git clone --depth 1 "https://${git_user}:${git_password}@github.com/ausaccessfed/aaf-terraform.git" "$dir"
 pushd "$dir"
-for project in $(echo $projects | tr "," "\n");
-do
-  for environment in $(echo $environments | tr "," "\n");
-  do
+for project in $(echo "$projects" | tr "," "\n"); do
+  for environment in $(echo "$environments" | tr "," "\n"); do
     DIRECTORY="manifests/${project}/overlays/${environment}"
     if [ -d "$DIRECTORY" ]; then
       if [ "$environment" == "jisc" ]; then
-        oci_repo_url=$(aws ssm get-parameter --name ${ECR_REPOSITORY}-eu-west-2-repo-url --query "Parameter.Value" --output text)
+        oci_repo_url=$(aws ssm get-parameter --name "${ECR_REPOSITORY}-eu-west-2-repo-url" --query "Parameter.Value" --output text)
       else
-        oci_repo_url=$(aws ssm get-parameter --name ${ECR_REPOSITORY}-repo-url --query "Parameter.Value" --output text)
+        oci_repo_url=$(aws ssm get-parameter --name "${ECR_REPOSITORY}-repo-url" --query "Parameter.Value" --output text)
       fi
       cd "$DIRECTORY"
-      kustomize edit set image $oci_repo_url:$tag
+      kustomize edit set image "$oci_repo_url:$tag"
+      #  TODO: if we move over to helm we need the below
+      # # TODO: we will need to refactor how we inject the image_Tag probaly an object of "images" with name and tag
+      # yq -ei '.spec.values.image.tag = "YOURTAG"' values.yaml
       cd -
     fi
   done
@@ -45,7 +45,7 @@ git pull
 git add .
 COMMIT_MESSAGE="Update ${projects} image tag ${ECR_REPOSITORY} to '$tag' for ${environments}"
 git commit -m "$COMMIT_MESSAGE" || echo "nothing to commit"
-git push 
+git push
 
 popd
 rm -rf "$dir"
