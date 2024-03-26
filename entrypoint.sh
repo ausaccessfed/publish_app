@@ -45,7 +45,7 @@ git pull
 git add .
 COMMIT_MESSAGE="Update ${projects} image tag ${ECR_REPOSITORY} to '$tag' for ${environments}"
 git commit -m "$COMMIT_MESSAGE" || echo "nothing to commit"
-git push
+git push || (sleep 1 && git pull && git push) || (sleep 1 && git pull && git push)
 
 popd
 rm -rf "$dir"
