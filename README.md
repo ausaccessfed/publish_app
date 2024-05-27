@@ -1,6 +1,6 @@
 # Publish App GitHub Action
 
-This action updates the manifests (GitOps) repository on CodeCommit to reflect the current version
+This action updates the GitOps manifests repository to reflect the current version
 of the specified application. Depending on the configuration of ArgoCD, this may trigger the application
 to be redeployed.
 
