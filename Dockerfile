@@ -19,7 +19,7 @@ RUN yum update -y \
     # renovate: datasource=yum repo=rocky-9-appstream-x86_64
     jq-1.6-15.el9 \
     # renovate: datasource=yum repo=rocky-9-appstream-x86_64
-    git-2.43.0-1.el9 \
+    git-2.43.5-1.el9_4 \
     && yum -y clean all \
     && rm -rf /var/cache/yum
 
