@@ -3,10 +3,8 @@
   "plugins": ["prettier"],
   "env": {
     "es2020": true,
-    "browser": true,
     "amd": true,
-    "commonjs": true,
-    "jquery": true
+    "commonjs": true
   },
   "globals": {
     "d3": true,
