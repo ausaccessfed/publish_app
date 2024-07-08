@@ -1,5 +1,5 @@
 # Container image that runs your code
-FROM rockylinux:9.3.20231119 as base
+FROM rockylinux:9.3.20231119 AS base
 USER root
 
 ENV APP_DIR=/app
@@ -29,7 +29,7 @@ RUN  git config --global user.email "ci@aaf.edu.au" \
     && git config --global user.name "AAF CI"
 
 
-FROM base as aws-dependencies
+FROM base AS aws-dependencies
 USER root
 
 RUN yum install -y \
@@ -46,7 +46,7 @@ RUN arch="$(rpm --eval '%{_arch}')" && export arch \
 
 USER app
 
-FROM base as kustomize
+FROM base AS kustomize
 USER root
 
 #  TODO: this one's release is kustomize/v5.2.1 do we need magic stuff?
@@ -65,7 +65,7 @@ RUN mkdir "/tmp/kustomize" \
 
 USER app
 
-FROM base as development
+FROM base AS development
 USER root
 
 # Copies your code file from your action repository to the filesystem path `/` of the container
@@ -81,7 +81,7 @@ ENTRYPOINT ["/entrypoint.sh"]
 
 USER app
 
-FROM development as production
+FROM development AS production
 USER root
 
 # Fix for https://github.com/goodwithtech/dockle/blob/master/CHECKPOINT.md#cis-di-0008
