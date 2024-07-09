@@ -25,6 +25,6 @@ jobs:
       event_name: ${{ github.event_name }}
       test_environments: ''
       default_branch: main
-      platforms: 'linux/arm64,linux/amd64'
+      platforms: "['linux/arm64,linux/amd64']"
       production_environments: ''
       development_environments: ''
