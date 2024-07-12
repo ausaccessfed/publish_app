@@ -30,4 +30,3 @@ jobs:
       platforms: "['linux/arm64','linux/amd64']"
       production_environments: ''
       development_environments: ''
-
