@@ -23,8 +23,6 @@ jobs:
       event_name: ${{ github.event_name }}
       event_comment_id: ${{ github.event.comment.id }}
       event_comment_body: ${{ github.event.comment.body }}
-name: Build Docker Image
-    name: Test, build and push image
       ecr_repository: publish_app
       version_command: echo ""
       test_environments: ''
