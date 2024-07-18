@@ -83,4 +83,5 @@ const common = [
 ]
 
 //EOF_DISTRIBUTION
-      '.github/'
+
+module.exports = [...common]
