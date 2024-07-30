@@ -1,5 +1,5 @@
 # Container image that runs your code
-FROM rockylinux:9.3.20231119 AS base
+FROM rockylinux/rockylinux:9.3.20231119 AS base
 USER root
 
 ENV APP_DIR=/app
